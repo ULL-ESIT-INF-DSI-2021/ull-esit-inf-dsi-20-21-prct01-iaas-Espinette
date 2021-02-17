@@ -1,8 +1,7 @@
 # INFORME
 ## Práctica 1 - Configuración de máquina virtual en el IaaS
-#### DSI - Desarrollo de Sistemas Informáticos
-#### ALBERTO RIOS DE LA ROSA
-#### alu0101235929@ull.edu.es
+### ALBERTO RIOS DE LA ROSA
+### alu0101235929@ull.edu.es
 
 
 
