@@ -1,9 +1,11 @@
-# INFORME
-## Práctica 1 - Configuración de máquina virtual en el IaaS
+# INFORME PRACTICA 1
+## Configuración de máquina virtual en el IaaS
 ### ALBERTO RIOS DE LA ROSA
 ### alu0101235929@ull.edu.es
 
+#### INTRODUCCIÓN
 
+En esta práctiva se lleva a cabo la configuración de la máquina virtual que hay disponible a través del servicio IaaS de la ULL, así como la instalación y configuración de las herramientas necesarias para trabjar con la asignatura. En este informe se indicaran los pasos realizados en esta práctica en el que aprenderemos a iniciar una máquina virtual por `ssh` sin introcucir contraseña y sin poner el nombre de usuario o la direccion ip de la máquina, tambien aprenderemos a configurar el git en la máquina de la IaaS para enlazarlo con el Github personal nuestro y más cosas que veremos según desarrollemos la configuración.
 
 ## Welcome to GitHub Pages
 
