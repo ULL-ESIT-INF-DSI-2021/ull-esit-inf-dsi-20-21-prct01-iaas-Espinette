@@ -37,6 +37,69 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 Ya realizado se nos pedirá una contraseña debiendo introducir *usuario* pues es la credencial por defecto tanto para el nombre de usuario como la contraseña. Una vez introducida el sistema nos pedirá automaticamente que la modifiquemos, para ello debemos introducir nuevamente la contraseña actual (*usuario*) y luego nos pedirá introducir dos veces la nueva contraseña, es importante que no nos olvidemos de la contraseña siendo recomendable apuntarla por algún lado. Ya realizado esto volveremos a iniciar la máquina por `ssh` pero esta vez nos pedirá la nueva contraseña para acceder.
 
 
+##### 4. Modificar nombre de host de la máquina virtual
+
+Para cambiar el nombre host de nuestra máquina debemos cambiar el contenido del fichero `etc/hostname` que contendrá el nombre de la máquina, en nuestro caso *ubuntu* y lo modificaremos por el nuevo nombre que queremos poner, en este caso se nos pide poner *iaas-dsi2* como nombre para la máquina. Vemos los comandos necesarios para ello:
+
+```bash
+usuario@ubuntu:~$ cat /etc/hostname
+ubuntu
+usuario@ubuntu:~$ sudo vi /etc/hostname
+usuario@ubuntu:~$ cat /etc/hostname
+iaas-dsi2
+```
+También debemos modificar el fichero `etc/hosts`, lo vemos en los siguientes comandos:
+
+```bash
+usuario@ubuntu:~$ cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	ubuntu
+...
+usuario@ubuntu:~$ sudo vi /etc/hosts
+usuario@ubuntu:~$ cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	iaas-dsi2
+...
+```
+Aqui ya hemos cambiado el nombre de host *ubuntu* por el nuevo nombre que le hemos asignado *iaas-dsi2*. Antes de reiniciar la maquina virtual para hacer los cambios efectivos debemos actualizar el software de la misma, usando:
+
+```bash
+usuario@ubuntu:~$ sudo apt update
+...
+usuario@ubuntu:~$ sudo apt upgrade
+...
+```
+Ahora ya podemos reiniciar la máquina:
+
+```bash
+usuario@ubuntu:~$ sudo reboot
+Connection to 10.6.XXX.XXX closed by remote host.
+Connection to 10.6.XXX.XXX closed.
+```
+
+##### 5. Editar fichero host de la máquina local para incluir información de la máquina virtual
+
+Antes de abrir la máquina virtual de nuevo, modificaremos el fichero `etc/hosts` de nuestra máquina local para incluir la IP de la máquina virtual y así no tendremos que conectarnos por ssh introdcuiendo la IP, si nlo por el nombre que le pusimos anterirormente, los pasos a seguir son los siguientes:
+
+```bash
+#Mostramos el fichero que contiene las ip seguido del host al que pertenece dicha ip
+alberto@ubuntu:~$ cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	ubuntu
+...
+
+#Modificamos ese fichero añadiendo una linea con la ip de nuestra máquina virtual y el nombre que le asiganmos a ella
+alberto@ubuntu:~$ sudo vi /etc/hosts
+
+#Mostramos el fichero nuevamente para confirmar que los cambios han sido correctos
+alberto@ubuntu:~$ cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	ubutnu
+
+10.6.XXX.XXX	iaas-dsi2
+...
+```
+
 
 
 
