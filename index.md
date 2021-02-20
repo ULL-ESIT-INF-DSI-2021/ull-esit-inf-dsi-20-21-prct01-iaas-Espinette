@@ -185,39 +185,153 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfCKDPGn7qLhwmjKCYaCBeOZVObmdHQ/GFOYALTU1L
 usuario@iaas-dsi2
 ```
 
+Ya una vez hecho esto, hemos terminado la configuración inicial de la maquina virtual
 
-You can use the [editor on GitHub](https://github.com/ULL-ESIT-INF-DSI-2021/ull-esit-inf-dsi-20-21-prct01-iaas-Espinette/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+### INSTALACIÓN DE GIT Y NODE.JS EN LA MAQUINA VIRTUAL DEL IAAS
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+#### 1. Instalar git en la máquina virtual
 
-### Markdown
+Normalmente suele venir preinstalado en el sistema operativo, pero en caso de que no esté ejecutaremos:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```bash
+usuario@iaas-dsi2:~$ sudo apt install git
+Leyendo lista de paquetes... Hecho
+Creando árbol de dependencias       
+Leyendo la información de estado... Hecho
+git ya está en su versión más reciente (1:2.25.1-1ubuntu3).
+0 actualizados, 0 nuevos se instalarán, 0 para eliminar y 0 no actualizados.
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+#### 2. Configuración git máquina virtual
 
-### Jekyll Themes
+Para seguir la configuración tenemos el siguiente [libro](https://git-scm.com/book/es/v2/Inicio---Sobre-el-Control-de-Versiones-Configurando-Git-por-primera-vez) aunque la configuración se resume en ejecutar los siguientes comandos:
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ULL-ESIT-INF-DSI-2021/ull-esit-inf-dsi-20-21-prct01-iaas-Espinette/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+´´´bash
+usuario@iaas-dsi2:~$ git config --global user.name "Alberto Rios de la Rosa"
+usuario@iaas-dsi2:~$ git config --global user.email alu0101235929@ull.edu.es
+usuario@iaas-dsi2:~$ git config --list
+user.name=Alberto Rios de la Rosa
+user.email=alu0101235929@ull.edu.es
+´´´
 
-### Support or Contact
+#### 3. Configurar prompt de la terminal en la máquina virtual
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Está configuración se hace para que aparezca la rama actual en la que nos encontramos cuando accedemos a algún directorio que resulta estar asociado a un repositorio git. Para esto, descargaremos el script [git prompt](https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh) y le echamos un vistazo al contenido para aprender a configurarlo en nuestra máquina virtual. Los pasos que doy a continuación serían para una `bash`:
+
+```bash
+usuario@iaas-dsi2:~$ mv git-prompt.sh .git-prompt.sh
+usuario@iaas-dsi2:~$ vi .bashrc
+usuario@iaas-dsi2:~$ tail .bashrc
+...
+source ~/.git-prompt.sh
+PS1='\[\033]0;\u@\h:\w\007\]\[\033[0;34m\][\[\033[0;31m\]\w\[\033[0;32m\]($(git branch 2>/dev/null | sed -n "s/\* \(.*\)/\1/p"))\[\033[0;34m\]]$'
+
+usuario@iaas-dsi2:~$ exec bash -l
+[~()]$
+```
+
+Podemos ver que el prompt ha cambiado de `usuario@iaas-dsi2:~$` a `[~()]$`.
+No obstante, para comprobar si realmente el prompt muestra lo que deseamos, que no es otra cosa que la rama actual de trabajo cuando accedemos a un directorio asociado a un repositorio, tendremos que añadir la clave pública de la máquina virtual en la configuración de las claves de nuestra cuenta de GitHub, de modo que nos sea mucho más fácil trabajar con repositorios remotos, y así poder también clonar alguno de los repositorios para hacer la prueba. En primer lugar, copie la clave pública de su máquina virtual:
+
+```bash
+[~()]$cat ~/.ssh/id_rsa.pub
+```
+
+Una vez copiada, acceda a la configuración de su cuenta de GitHub (account settings), y en la sección SSH and GPG keys, pulse sobre el botón New SSH key. En el formulario añada un título para la clave (yo tengo usuario@iaas-dsi2) y pegue la clave pública de su máquina virtual en el campo de texto key. Por último, pulse sobre el botón Add SSH key. Si todo ha ido bien, ahora podría ejecutar el siguiente comando desde la máquina virtual para clonar un repositorio:
+
+```bash
+[~()]$git clone git@github.com:ULL-ESIT-INF-DSI-2021/prct01-iaas-vscode.git
+Clonando en 'prct01-iaas-vscode'...
+remote: Enumerating objects: 100, done.
+remote: Counting objects: 100% (100/100), done.
+remote: Compressing objects: 100% (79/79), done.
+remote: Total 100 (delta 32), reused 50 (delta 16), pack-reused 0
+Recibiendo objetos: 100% (100/100), 341.75 KiB | 1.63 MiB/s, listo.
+Resolviendo deltas: 100% (32/32), listo.
+[~()]$ls
+
+#Vemos que se ha creado correctamente
+prct01-iaas-vscode
+
+#Accedemos al directorio
+[~()]$cd prct01-iaas-vscode/
+[~/prct01-iaas-vscode(main)]$
+```
+
+#### 4. Instalar Node Version Manager (nvm), el gestor de versiones de Node.js
+
+[Node.js](https://nodejs.org/en/) es un entorno que permite la ejecución de código desarrollado en JavaScript y variantes, como por ejemplo, TypeScript.
+
+```bash
+[~()]$wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+[~()]$exec bash -l
+[~()]$nvm --version
+0.37.2
+````
+
+Ya instalado nvm vamos a proceder a instalar la versión más reciente de Node.js:
+
+```bash
+[~()]$nvm install node
+Downloading and installing node v15.8.0...
+Downloading https://nodejs.org/dist/v15.8.0/node-v15.8.0-linux-x64.tar.xz...
+####################################################################################################################################################################################### 100,0%
+Computing checksum with sha256sum
+Checksums matched!
+Now using node v15.8.0 (npm v7.5.1)
+Creating default alias: default -> node (-> v15.8.0)
+[~()]$node --version
+v15.8.0
+[~()]$npm --version
+7.5.1
+````
+Vemos que se ha instalado la versión más reciente de Node, pero para isntalar una versión más concreta hacemos lo siguiente:
+
+```bash
+[~()]$nvm install 12.0.0
+Downloading and installing node v12.0.0...
+Downloading https://nodejs.org/dist/v12.0.0/node-v12.0.0-linux-x64.tar.xz...
+####################################################################################################################################################################################### 100,0%
+Computing checksum with sha256sum
+Checksums matched!
+Now using node v12.0.0 (npm v6.9.0)
+[~()]$node --version
+v12.0.0
+[~()]$npm --version
+6.9.0
+````
+
+Por último, para cambiar entre versiones, podemos ejecutar los siguientes comandos:
+
+```bash
+[~()]$nvm list
+->      v12.0.0
+        v15.8.0
+default -> node (-> v15.8.0)
+iojs -> N/A (default)
+unstable -> N/A (default)
+node -> stable (-> v15.8.0) (default)
+stable -> 15.8 (-> v15.8.0) (default)
+lts/* -> lts/fermium (-> N/A)
+lts/argon -> v4.9.1 (-> N/A)
+lts/boron -> v6.17.1 (-> N/A)
+lts/carbon -> v8.17.0 (-> N/A)
+lts/dubnium -> v10.23.2 (-> N/A)
+lts/erbium -> v12.20.1 (-> N/A)
+lts/fermium -> v14.15.4 (-> N/A)
+[~()]$nvm use v15.8.0 
+Now using node v15.8.0 (npm v7.5.1)
+[~()]$node --version
+v15.8.0
+[~()]$npm --version
+7.5.1
+````
+
+Una vez hecho esto ya habremos terminado la configuración de nuestra máquina virtual para el correcto desarrollo de la asignatura, y podremos proceder a la realización de futuras prácticas facilitando el trabajo en estás.
+
+
+
+
+
+
+
